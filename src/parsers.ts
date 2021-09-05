@@ -1,15 +1,6 @@
-export type Match = {
-  match: string
-  type: 'MentionParser' | 'EmailParser' | 'LinkParser' | string
-  [key: string]: any
-}
+import {Match, Parser} from './types'
 
-export interface Parser {
-  regex: RegExp
-  converter: (match: string) => Match
-}
-
-export class MentionParser {
+export class MentionParser implements Parser {
   regex: RegExp = /@\(\d+\|(.+?)\)/
 
   converter(mention: string): Match {
@@ -23,9 +14,9 @@ export class MentionParser {
 }
 
 export class EmailParser implements Parser {
-  regex: RegExp = /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/
+  regex: RegExp = /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/i
 
-  converter(match: string) {
+  converter(match: string): Match {
     return {
       type: 'EmailParser',
       match,
@@ -34,7 +25,7 @@ export class EmailParser implements Parser {
 }
 
 export class LinkParser implements Parser {
-  regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/
+  regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/i
 
   converter(match: string): Match {
     return {

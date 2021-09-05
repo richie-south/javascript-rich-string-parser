@@ -1,5 +1,4 @@
-import {richStringParser} from './index'
-import {EmailParser, LinkParser, MentionParser} from './parsers'
+import {richStringParser, EmailParser, LinkParser, MentionParser} from './index'
 
 describe('Mention parser', () => {
   it('find mention', () => {
