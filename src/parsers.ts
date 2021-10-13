@@ -1,36 +1,73 @@
 import {Match, Parser} from './types'
 
-export class MentionParser implements Parser {
-  regex: RegExp = /@\(\d+\|(.+?)\)/
+export function mentionParser(): Parser {
+  const regex: RegExp = /@\(\d+\|(.+?)\)/
 
-  converter(mention: string): Match {
-    return {
-      type: 'MentionParser',
-      match: mention,
-      id: Number(mention.substring(2, mention.indexOf('|'))),
-      name: mention.substring(mention.indexOf('|') + 1, mention.length - 1),
-    }
+  return {
+    findMatch: (text) => {
+      const result = regex.exec(text)
+      if (result === null) return null
+
+      return {
+        value: result[0],
+        index: result.index,
+      }
+    },
+
+    converter: (mention) => {
+      return {
+        type: 'MentionParser',
+        match: mention,
+        id: Number(mention.substring(2, mention.indexOf('|'))),
+        name: mention.substring(mention.indexOf('|') + 1, mention.length - 1),
+      }
+    },
   }
 }
 
-export class EmailParser implements Parser {
-  regex: RegExp = /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/i
+export function emailParser(): Parser {
+  const regex: RegExp =
+    /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/i
 
-  converter(match: string): Match {
-    return {
-      type: 'EmailParser',
-      match,
-    }
+  return {
+    findMatch: (text) => {
+      const result = regex.exec(text)
+      if (result === null) return null
+
+      return {
+        value: result[0],
+        index: result.index,
+      }
+    },
+
+    converter: (match) => {
+      return {
+        type: 'EmailParser',
+        match,
+      }
+    },
   }
 }
 
-export class LinkParser implements Parser {
-  regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/i
+export function linkParser(): Parser {
+  const regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/i
 
-  converter(match: string): Match {
-    return {
-      type: 'LinkParser',
-      match,
-    }
+  return {
+    findMatch: (text) => {
+      const result = regex.exec(text)
+      if (result === null) return null
+
+      return {
+        value: result[0],
+        index: result.index,
+      }
+    },
+
+    converter: (match) => {
+      return {
+        type: 'LinkParser',
+        match,
+      }
+    },
   }
 }

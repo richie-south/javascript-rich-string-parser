@@ -4,7 +4,10 @@ export declare type Match = {
     [key: string]: any;
 };
 export interface Parser {
-    regex: RegExp;
+    findMatch: (text: string) => {
+        value: string;
+        index: number;
+    } | null;
     converter: (match: string) => Match;
 }
 export declare type MatchResults = Array<Match | string>;

@@ -5,7 +5,10 @@ export type Match = {
 }
 
 export interface Parser {
-  regex: RegExp
+  findMatch: (text: string) => {
+    value: string
+    index: number
+  } | null
   converter: (match: string) => Match
 }
 
