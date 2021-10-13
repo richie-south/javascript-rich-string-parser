@@ -1,6 +1,6 @@
 import {Match, Parser} from './types'
 
-export function mentionParser(): Parser {
+export function mentionParser(): Parser<'MentionParser'> {
   const regex: RegExp = /@\(\d+\|(.+?)\)/
 
   return {
@@ -25,7 +25,7 @@ export function mentionParser(): Parser {
   }
 }
 
-export function emailParser(): Parser {
+export function emailParser(): Parser<'EmailParser'> {
   const regex: RegExp =
     /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/i
 
@@ -49,7 +49,7 @@ export function emailParser(): Parser {
   }
 }
 
-export function linkParser(): Parser {
+export function linkParser(): Parser<'LinkParser'> {
   const regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/i
 
   return {

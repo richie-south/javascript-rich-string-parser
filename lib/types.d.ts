@@ -1,13 +1,13 @@
-export declare type Match = {
+export declare type Match<T = unknown> = {
     match: string;
-    type: 'MentionParser' | 'EmailParser' | 'LinkParser';
+    type: 'MentionParser' | 'EmailParser' | 'LinkParser' | T;
     [key: string]: any;
 };
-export interface Parser {
+export interface Parser<T = unknown> {
     findMatch: (text: string) => {
         value: string;
         index: number;
     } | null;
-    converter: (match: string) => Match;
+    converter: (match: string) => Match<T>;
 }
-export declare type MatchResults = Array<Match | string>;
+export declare type MatchResults<T = unknown> = Array<Match<T> | string>;

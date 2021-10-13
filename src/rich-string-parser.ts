@@ -1,7 +1,10 @@
 import {MatchResults, Parser} from './types'
 
-function _runParserWithText(parser: Parser, text: string): MatchResults {
-  let contentList: MatchResults = []
+function _runParserWithText<T>(
+  parser: Parser<T>,
+  text: string,
+): MatchResults<T> {
+  let contentList: MatchResults<T> = []
   const textLength = text.length
 
   if (text == undefined || textLength === 0) {
@@ -28,11 +31,11 @@ function _runParserWithText(parser: Parser, text: string): MatchResults {
   return contentList
 }
 
-function _runParser(
-  parser: Parser,
+function _runParser<T>(
+  parser: Parser<T>,
   text?: string,
-  list?: MatchResults,
-): MatchResults {
+  list?: MatchResults<T>,
+): MatchResults<T> {
   if (list != undefined && list.length > 0) {
     const _contentList: any = list
 
@@ -46,16 +49,16 @@ function _runParser(
 
     return _contentList.flat()
   } else if (text != undefined && text.length > 0) {
-    return _runParserWithText(parser, text)
+    return _runParserWithText<T>(parser, text)
   }
 
   return []
 }
 
-export function richStringParser(
+export function richStringParser<T>(
   text: string,
-  parsers: Parser[],
-): MatchResults {
+  parsers: Parser<T>[],
+): MatchResults<T> {
   if (!text) {
     return []
   }
@@ -66,5 +69,5 @@ export function richStringParser(
       contentList.length === 0 && text,
       contentList.length && contentList,
     )
-  }, [] as MatchResults)
+  }, [] as MatchResults<T>)
 }
