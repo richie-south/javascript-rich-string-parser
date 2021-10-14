@@ -18,15 +18,15 @@ function _runParserWithText<T>(
     return contentList
   }
 
-  const values = text.split(match.value)
-  const subText = text.substring(match.index + match.value.length, textLength)
+  const firstPart = text.substring(0, match.index)
 
-  if (values[0].length > 0) {
-    contentList.push(values[0])
+  if (firstPart.length > 0) {
+    contentList.push(firstPart)
   }
 
+  const lastPart = text.substring(match.index + match.value.length, textLength)
   contentList.push(parser.converter(match.value))
-  contentList = [...contentList, ..._runParserWithText(parser, subText)]
+  contentList = [...contentList, ..._runParserWithText(parser, lastPart)]
 
   return contentList
 }
