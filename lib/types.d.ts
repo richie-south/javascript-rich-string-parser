@@ -1,6 +1,6 @@
 export declare type Match<T = unknown> = {
     match: string;
-    type: 'MentionParser' | 'EmailParser' | 'LinkParser' | T;
+    type: T;
     [key: string]: any;
 };
 export interface Parser<T = unknown> {
