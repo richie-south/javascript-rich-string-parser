@@ -1,9 +1,7 @@
 import {MatchResults, Parser} from './types'
 
 function _textParser<T>(parser: Parser<T>, text: string): MatchResults<T> {
-  const textLength = text.length
-
-  if (text === undefined || textLength === 0) {
+  if (!text) {
     return []
   }
 
@@ -20,7 +18,7 @@ function _textParser<T>(parser: Parser<T>, text: string): MatchResults<T> {
     contentList.push(firstPart)
   }
 
-  const lastPart = text.substring(match.index + match.value.length, textLength)
+  const lastPart = text.substring(match.index + match.value.length, text.length)
   contentList.push(parser.converter(match.value))
 
   return [...contentList, ..._textParser(parser, lastPart)]
