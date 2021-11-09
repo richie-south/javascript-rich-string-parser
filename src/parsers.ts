@@ -4,22 +4,17 @@ export function mentionParser(): Parser<'MentionParser'> {
   const regex: RegExp = /@\(\d+\|(.+?)\)/
 
   return {
-    findMatch: (text) => {
+    parse: (text) => {
       const result = regex.exec(text)
       if (result === null) return null
 
-      return {
-        value: result[0],
-        index: result.index,
-      }
-    },
-
-    converter: (mention) => {
+      const match = result[0]
       return {
         type: 'MentionParser',
-        match: mention,
-        id: Number(mention.substring(2, mention.indexOf('|'))),
-        name: mention.substring(mention.indexOf('|') + 1, mention.length - 1),
+        match,
+        index: result.index,
+        id: Number(match.substring(2, match.indexOf('|'))),
+        name: match.substring(match.indexOf('|') + 1, match.length - 1),
       }
     },
   }
@@ -30,20 +25,14 @@ export function emailParser(): Parser<'EmailParser'> {
     /([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,16})/i
 
   return {
-    findMatch: (text) => {
+    parse: (text) => {
       const result = regex.exec(text)
       if (result === null) return null
 
       return {
-        value: result[0],
-        index: result.index,
-      }
-    },
-
-    converter: (match) => {
-      return {
         type: 'EmailParser',
-        match,
+        match: result[0],
+        index: result.index,
       }
     },
   }
@@ -53,20 +42,14 @@ export function linkParser(): Parser<'LinkParser'> {
   const regex: RegExp = /((?:https?):\/\/[^\s/$.?#].[^\s]*)/i
 
   return {
-    findMatch: (text) => {
+    parse: (text) => {
       const result = regex.exec(text)
       if (result === null) return null
 
       return {
-        value: result[0],
-        index: result.index,
-      }
-    },
-
-    converter: (match) => {
-      return {
         type: 'LinkParser',
-        match,
+        match: result[0],
+        index: result.index,
       }
     },
   }

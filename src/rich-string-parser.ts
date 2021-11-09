@@ -1,3 +1,4 @@
+import {emailParser} from '.'
 import {MatchResults, Parser} from './types'
 
 function _textParser<T>(parser: Parser<T>, text: string): MatchResults<T> {
@@ -5,7 +6,7 @@ function _textParser<T>(parser: Parser<T>, text: string): MatchResults<T> {
     return []
   }
 
-  const match = parser.findMatch(text)
+  const match = parser.parse(text)
 
   if (match === null) {
     return [text]
@@ -18,8 +19,8 @@ function _textParser<T>(parser: Parser<T>, text: string): MatchResults<T> {
     contentList.push(firstPart)
   }
 
-  const lastPart = text.substring(match.index + match.value.length, text.length)
-  contentList.push(parser.converter(match.value))
+  const lastPart = text.substring(match.index + match.match.length, text.length)
+  contentList.push(match)
 
   return [...contentList, ..._textParser(parser, lastPart)]
 }

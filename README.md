@@ -14,9 +14,9 @@ const result = richStringParser(
 
 // log result
 /* [
-  { type: 'LinkParser', match: 'https://www.typescriptlang.org/' },
+  { type: 'LinkParser', match: 'https://www.typescriptlang.org/', index: 0 },
   ' text ',
-  { type: 'EmailParser', match: 'example@example.com' },
+  { type: 'EmailParser', match: 'example@example.com', index: 37 },
   ' more text'
 ] */
 ```
@@ -35,6 +35,7 @@ Result:
   match: '@(9712|John)',
   id: 9712,
   name: 'John',
+  index: 0,
 }
 ```
 
@@ -48,6 +49,7 @@ Result:
 {
   type: 'EmailParser',
   match: 'example@example.com',
+  index: 0,
 }
 ```
 
@@ -61,6 +63,7 @@ Result:
 {
   type: 'LinkParser',
   match: 'https://example.com',
+  index: 0,
 }
 ```
 
@@ -81,20 +84,14 @@ function hashtagParser(): Parser<'HashtagParser'> {
   const regex: RegExp = /(#[a-z\d-]+)/gi
 
   return {
-    findMatch: (text) => {
+    parse: (text) => {
       const result = regex.exec(text)
       if (result === null) return null
 
       return {
-        value: result[0],
-        index: result.index,
-      }
-    },
-
-    converter: (match) => {
-      return {
         type: 'HashtagParser',
-        match,
+        match: result[0],
+        index: result.index,
       }
     },
   }

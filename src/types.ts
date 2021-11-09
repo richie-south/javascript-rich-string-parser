@@ -1,15 +1,12 @@
 export type Match<T = unknown> = {
   match: string
+  index: number
   type: T
   [key: string]: any
 }
 
 export interface Parser<T = unknown> {
-  findMatch: (text: string) => {
-    value: string
-    index: number
-  } | null
-  converter: (match: string) => Match<T>
+  parse: (text: string) => Match<T> | null
 }
 
 export type MatchResults<T = unknown> = Array<Match<T> | string>

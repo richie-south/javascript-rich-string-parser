@@ -16,6 +16,7 @@ describe('Mention parser', () => {
         type: 'MentionParser',
         id: 123,
         match: '@(123|richard)',
+        index: 6,
         name: 'richard',
       },
       ' whats up?',
@@ -33,16 +34,24 @@ describe('Mention parser', () => {
         type: 'MentionParser',
         match: '@(123|richard)',
         id: 123,
+        index: 5,
         name: 'richard',
       },
       {
         type: 'MentionParser',
         match: '@(123|richard)',
         id: 123,
+        index: 0,
         name: 'richard',
       },
       ' asd ',
-      {type: 'MentionParser', match: '@(456|erik)', id: 456, name: 'erik'},
+      {
+        type: 'MentionParser',
+        match: '@(456|erik)',
+        id: 456,
+        index: 5,
+        name: 'erik',
+      },
       ' hej',
     ])
   })
@@ -58,6 +67,7 @@ describe('Email parser', () => {
       ' asd ',
       {
         type: 'EmailParser',
+        index: 5,
         match: 'richard@gmail.com',
       },
       ' asd ',
@@ -71,11 +81,11 @@ describe('Email parser', () => {
     expect(result.length).toEqual(7)
     expect(result).toEqual([
       ' asd ',
-      {type: 'EmailParser', match: 'richard@gmail.com'},
+      {type: 'EmailParser', index: 5, match: 'richard@gmail.com'},
       ' ',
-      {type: 'EmailParser', match: 'asd@asd.com'},
+      {type: 'EmailParser', index: 1, match: 'asd@asd.com'},
       ' asd ',
-      {type: 'EmailParser', match: 'test@test.se'},
+      {type: 'EmailParser', index: 5, match: 'test@test.se'},
       ' ',
     ])
   })
@@ -91,6 +101,7 @@ describe('Link parser', () => {
       ' asd ',
       {
         type: 'LinkParser',
+        index: 5,
         match: 'https://plantr.online',
       },
       ' asd ',
@@ -105,9 +116,9 @@ describe('Link parser', () => {
     expect(result.length).toEqual(5)
     expect(result).toEqual([
       ' asd ',
-      {type: 'LinkParser', match: 'http://richardsoderman.se'},
+      {type: 'LinkParser', index: 5, match: 'http://richardsoderman.se'},
       ' asd ',
-      {type: 'LinkParser', match: 'https://plantr.online'},
+      {type: 'LinkParser', index: 5, match: 'https://plantr.online'},
       ' hej',
     ])
   })
@@ -130,19 +141,21 @@ describe('Multible parsers', () => {
         type: 'MentionParser',
         match: '@(456|example)',
         id: 456,
+        index: 6,
         name: 'example',
       },
       ' ipsum ',
-      {type: 'EmailParser', match: 'example@gmail.com'},
+      {type: 'EmailParser', index: 7, match: 'example@gmail.com'},
       ' ',
-      {type: 'LinkParser', match: 'http://example.com'},
+      {type: 'LinkParser', index: 45, match: 'http://example.com'},
       ' hello ',
-      {type: 'LinkParser', match: 'https://www.google.com'},
+      {type: 'LinkParser', index: 7, match: 'https://www.google.com'},
       ' ',
       {
         type: 'MentionParser',
         match: '@(123|example)',
         id: 123,
+        index: 1,
         name: 'example',
       },
     ])
