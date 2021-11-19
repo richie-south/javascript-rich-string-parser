@@ -1,4 +1,4 @@
-import {Match, Parser} from './types'
+import {Parser} from './types'
 
 export function mentionParser(): Parser<'MentionParser'> {
   const regex: RegExp = /@\(\d+\|(.+?)\)/
