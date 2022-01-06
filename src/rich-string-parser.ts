@@ -29,7 +29,7 @@ function _parser<T>(
   text?: string,
   list?: MatchResults<T>,
 ): MatchResults<T> {
-  if (list != undefined && list.length > 0) {
+  if (list !== undefined && list.length > 0) {
     return list.flatMap((item) => {
       if (typeof item === 'string') {
         const subList = _textParser(parser, item)
@@ -38,7 +38,7 @@ function _parser<T>(
 
       return item
     })
-  } else if (text != undefined && text.length > 0) {
+  } else if (text !== undefined && text.length > 0) {
     return _textParser<T>(parser, text)
   }
 
