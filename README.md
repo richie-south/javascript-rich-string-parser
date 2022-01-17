@@ -5,7 +5,9 @@ Finds rich text in strings, ex: links, mentions, emails, your own parser, in an 
 **Example**
 
 ```typescript
-import {richStringParser, emailParser, linkParser} from 'rich-string-parser'
+import {richStringParser} from 'rich-string-parser'
+import {emailParser} from 'rich-string-parser/lib/parsers/email-parser'
+import {linkParser} from 'rich-string-parser/lib/parsers/link-parser'
 
 const result = richStringParser(
   'https://www.typescriptlang.org/ text example@example.com more text',
