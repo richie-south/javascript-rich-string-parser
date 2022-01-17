@@ -70,12 +70,7 @@ Result:
 ## Create your own parser
 
 Create a function that retrurns a `Parser` interface with a custom string in generic type, example `Parser<'HashtagParser'>`.
-Implemente the required return object with `findMatch` and `converter`.
-
-In `findMatch` you recive string part where you can find a match in any way you want, regex, custom string manipulation or any other way.
-You just need to return the index of your match and the match itself.
-
-In `converter` you specify the structure of the return value from `richStringParser()`. `type` and `match` are required otherwise you can format it however you want.
+Implemente the required return object function `parse`.
 
 **Example**
 
