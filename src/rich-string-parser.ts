@@ -32,17 +32,14 @@ function _parser<T>(
   if (list !== undefined && list.length > 0) {
     return list.flatMap((item) => {
       if (typeof item === 'string') {
-        const subList = _textParser(parser, item)
-        return subList
+        return _textParser(parser, item)
       }
 
       return item
     })
-  } else if (text !== undefined && text.length > 0) {
-    return _textParser<T>(parser, text)
   }
 
-  return []
+  return _textParser<T>(parser, text)
 }
 
 export function richStringParser<T>(
@@ -54,10 +51,6 @@ export function richStringParser<T>(
   }
 
   return parsers.reduce((contentList, parser) => {
-    return _parser(
-      parser,
-      contentList.length === 0 && text,
-      contentList.length && contentList,
-    )
+    return _parser(parser, text, contentList)
   }, [] as MatchResults<T>)
 }
