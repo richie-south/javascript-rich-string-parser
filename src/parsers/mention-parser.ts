@@ -4,7 +4,7 @@ export function mentionParser(): Parser<'MentionParser'> {
   const regex: RegExp = /@\(\d+\|(.+?)\)/
 
   return {
-    parse: (text) => {
+    parse: (text, index) => {
       const result = regex.exec(text)
       if (result === null) return null
 
@@ -12,7 +12,8 @@ export function mentionParser(): Parser<'MentionParser'> {
       return {
         type: 'MentionParser',
         match,
-        index: result.index,
+        index: index + result.index,
+        subIndex: result.index,
         id: Number(match.substring(2, match.indexOf('|'))),
         name: match.substring(match.indexOf('|') + 1, match.length - 1),
       }
