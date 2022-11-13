@@ -20,6 +20,7 @@ describe('Mention parser', () => {
         id: 123,
         match: '@(123|richard)',
         index: 6,
+        subIndex: 6,
         name: 'richard',
       },
       ' whats up?',
@@ -38,13 +39,15 @@ describe('Mention parser', () => {
         match: '@(123|richard)',
         id: 123,
         index: 5,
+        subIndex: 5,
         name: 'richard',
       },
       {
         type: 'MentionParser',
         match: '@(123|richard)',
         id: 123,
-        index: 0,
+        index: 19,
+        subIndex: 0,
         name: 'richard',
       },
       ' asd ',
@@ -52,7 +55,8 @@ describe('Mention parser', () => {
         type: 'MentionParser',
         match: '@(456|erik)',
         id: 456,
-        index: 5,
+        index: 38,
+        subIndex: 5,
         name: 'erik',
       },
       ' hej',
@@ -71,6 +75,7 @@ describe('Email parser', () => {
       {
         type: 'EmailParser',
         index: 5,
+        subIndex: 5,
         match: 'richard@gmail.com',
       },
       ' asd ',
@@ -84,11 +89,11 @@ describe('Email parser', () => {
     expect(result.length).toEqual(7)
     expect(result).toEqual([
       ' asd ',
-      {type: 'EmailParser', index: 5, match: 'richard@gmail.com'},
+      {type: 'EmailParser', index: 5, subIndex: 5, match: 'richard@gmail.com'},
       ' ',
-      {type: 'EmailParser', index: 1, match: 'asd@asd.com'},
+      {type: 'EmailParser', index: 23, subIndex: 1, match: 'asd@asd.com'},
       ' asd ',
-      {type: 'EmailParser', index: 5, match: 'test@test.se'},
+      {type: 'EmailParser', index: 39, subIndex: 5, match: 'test@test.se'},
       ' ',
     ])
   })
@@ -105,6 +110,7 @@ describe('Link parser', () => {
       {
         type: 'LinkParser',
         index: 5,
+        subIndex: 5,
         match: 'https://plantr.online',
       },
       ' asd ',
@@ -119,9 +125,19 @@ describe('Link parser', () => {
     expect(result.length).toEqual(5)
     expect(result).toEqual([
       ' asd ',
-      {type: 'LinkParser', index: 5, match: 'http://richardsoderman.se'},
+      {
+        type: 'LinkParser',
+        index: 5,
+        subIndex: 5,
+        match: 'http://richardsoderman.se',
+      },
       ' asd ',
-      {type: 'LinkParser', index: 5, match: 'https://plantr.online'},
+      {
+        type: 'LinkParser',
+        index: 35,
+        subIndex: 5,
+        match: 'https://plantr.online',
+      },
       ' hej',
     ])
   })
@@ -145,20 +161,32 @@ describe('Multible parsers', () => {
         match: '@(456|example)',
         id: 456,
         index: 6,
+        subIndex: 6,
         name: 'example',
       },
       ' ipsum ',
-      {type: 'EmailParser', index: 7, match: 'example@gmail.com'},
+      {type: 'EmailParser', index: 27, subIndex: 7, match: 'example@gmail.com'},
       ' ',
-      {type: 'LinkParser', index: 45, match: 'http://example.com'},
+      {
+        type: 'LinkParser',
+        index: 45,
+        subIndex: 45,
+        match: 'http://example.com',
+      },
       ' hello ',
-      {type: 'LinkParser', index: 7, match: 'https://www.google.com'},
+      {
+        type: 'LinkParser',
+        index: 70,
+        subIndex: 7,
+        match: 'https://www.google.com',
+      },
       ' ',
       {
         type: 'MentionParser',
         match: '@(123|example)',
         id: 123,
-        index: 1,
+        index: 93,
+        subIndex: 1,
         name: 'example',
       },
     ])
@@ -193,5 +221,123 @@ describe('Preformance', () => {
     const time = afterDate.getTime() - beforeDate.getTime()
 
     expect(time).toBeLessThanOrEqual(8)
+  })
+})
+
+describe('index', () => {
+  it('Should calculate index based on whole string when using single parser', () => {
+    const string =
+      'jag vill att @(123|asd) ska göra något kul men @(456|fgh) ska inte var för bra'
+    const result = richStringParser(string, [mentionParser()])
+
+    expect(result).toEqual([
+      'jag vill att ',
+      {
+        type: 'MentionParser',
+        match: '@(123|asd)',
+        index: 13,
+        subIndex: 13,
+        id: 123,
+        name: 'asd',
+      },
+      ' ska göra något kul men ',
+      {
+        type: 'MentionParser',
+        match: '@(456|fgh)',
+        index: 47, // 24
+        subIndex: 24,
+        id: 456,
+        name: 'fgh',
+      },
+      ' ska inte var för bra',
+    ])
+  })
+
+  it('Should calculate index based on whole string when using two parsers', () => {
+    const string =
+      'jag vill att @(123|asd) ska göra asd@kingen.se något kul men @(456|fgh) ska inte var för bra'
+    const result = richStringParser(string, [mentionParser(), emailParser()])
+
+    expect(result).toEqual([
+      'jag vill att ',
+      {
+        type: 'MentionParser',
+        match: '@(123|asd)',
+        index: 13,
+        subIndex: 13,
+        id: 123,
+        name: 'asd',
+      },
+      ' ska göra ',
+      {
+        type: 'EmailParser',
+        match: 'asd@kingen.se',
+        index: 33,
+        subIndex: 10,
+      },
+      ' något kul men ',
+      {
+        type: 'MentionParser',
+        match: '@(456|fgh)',
+        index: 61,
+        subIndex: 38,
+        id: 456,
+        name: 'fgh',
+      },
+      ' ska inte var för bra',
+    ])
+  })
+
+  it('Should calculate index based on whole string when using multible parsers', () => {
+    const string =
+      'jag vill https://google.com att @(123|asd) ska göra asd@kingen.se något kul men @(456|fgh) ska https://google.com inte var för bra'
+    const result = richStringParser(string, [
+      mentionParser(),
+      emailParser(),
+      linkParser(),
+    ])
+
+    expect(result).toEqual([
+      'jag vill ',
+      {
+        type: 'LinkParser',
+        match: 'https://google.com',
+        index: 9,
+        subIndex: 9,
+      },
+      ' att ',
+      {
+        type: 'MentionParser',
+        match: '@(123|asd)',
+        index: 32,
+        subIndex: 32,
+        id: 123,
+        name: 'asd',
+      },
+      ' ska göra ',
+      {
+        type: 'EmailParser',
+        match: 'asd@kingen.se',
+        index: 52,
+        subIndex: 10,
+      },
+      ' något kul men ',
+      {
+        type: 'MentionParser',
+        match: '@(456|fgh)',
+        index: 80,
+        subIndex: 38,
+        id: 456,
+        name: 'fgh',
+      },
+      ' ska ',
+      {
+        type: 'LinkParser',
+        match: 'https://google.com',
+        index: 95,
+        subIndex: 5,
+      },
+      ' inte var för bra',
+    ])
   })
 })
