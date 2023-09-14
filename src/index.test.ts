@@ -13,6 +13,7 @@ describe('Mention parser', () => {
     expect(result[1]).toHaveProperty('type', 'MentionParser')
     expect(result[1]).toHaveProperty('match', '@(123|richard)')
     expect(result[1]).toHaveProperty('name', 'richard')
+    expect(result[1]).toHaveProperty('mentionType', 'agent')
     expect(result).toEqual([
       'Hello ',
       {
@@ -22,6 +23,32 @@ describe('Mention parser', () => {
         index: 6,
         subIndex: 6,
         name: 'richard',
+        mentionType: 'agent'
+      },
+      ' whats up?',
+    ])
+  })
+
+  it('find mention with mention type', () => {
+    const string = 'Hello @(123|richard|agent) whats up?'
+    const result = richStringParser(string, [mentionParser()])
+
+    expect(result.length).toEqual(3)
+    expect(result[1]).toHaveProperty('id', 123)
+    expect(result[1]).toHaveProperty('type', 'MentionParser')
+    expect(result[1]).toHaveProperty('match', '@(123|richard|agent)')
+    expect(result[1]).toHaveProperty('name', 'richard')
+    expect(result[1]).toHaveProperty('mentionType', 'agent')
+    expect(result).toEqual([
+      'Hello ',
+      {
+        type: 'MentionParser',
+        id: 123,
+        match: '@(123|richard|agent)',
+        index: 6,
+        subIndex: 6,
+        name: 'richard',
+        mentionType: 'agent'
       },
       ' whats up?',
     ])
@@ -41,6 +68,7 @@ describe('Mention parser', () => {
         index: 5,
         subIndex: 5,
         name: 'richard',
+        mentionType: 'agent',
       },
       {
         type: 'MentionParser',
@@ -49,6 +77,7 @@ describe('Mention parser', () => {
         index: 19,
         subIndex: 0,
         name: 'richard',
+        mentionType: 'agent',
       },
       ' asd ',
       {
@@ -58,6 +87,7 @@ describe('Mention parser', () => {
         index: 38,
         subIndex: 5,
         name: 'erik',
+        mentionType: 'agent',
       },
       ' hej',
     ])
@@ -163,6 +193,7 @@ describe('Multible parsers', () => {
         index: 6,
         subIndex: 6,
         name: 'example',
+        mentionType: 'agent'
       },
       ' ipsum ',
       {type: 'EmailParser', index: 27, subIndex: 7, match: 'example@gmail.com'},
@@ -188,6 +219,7 @@ describe('Multible parsers', () => {
         index: 93,
         subIndex: 1,
         name: 'example',
+        mentionType: 'agent'
       },
     ])
   })
@@ -239,6 +271,7 @@ describe('index', () => {
         subIndex: 13,
         id: 123,
         name: 'asd',
+        mentionType: 'agent',
       },
       ' ska göra något kul men ',
       {
@@ -248,6 +281,7 @@ describe('index', () => {
         subIndex: 24,
         id: 456,
         name: 'fgh',
+        mentionType: 'agent',
       },
       ' ska inte var för bra',
     ])
@@ -267,6 +301,7 @@ describe('index', () => {
         subIndex: 13,
         id: 123,
         name: 'asd',
+        mentionType: 'agent',
       },
       ' ska göra ',
       {
@@ -283,6 +318,7 @@ describe('index', () => {
         subIndex: 38,
         id: 456,
         name: 'fgh',
+        mentionType: 'agent',
       },
       ' ska inte var för bra',
     ])
@@ -290,7 +326,7 @@ describe('index', () => {
 
   it('Should calculate index based on whole string when using multible parsers', () => {
     const string =
-      'jag vill https://google.com att @(123|asd) ska göra asd@kingen.se något kul men @(456|fgh) ska https://google.com inte var för bra'
+      'jag vill https://google.com att @(123|asd) ska göra asd@kingen.se något kul men @(0|testgroupchatroom|group) ska https://google.com inte var för bra'
     const result = richStringParser(string, [
       mentionParser(),
       emailParser(),
@@ -313,6 +349,7 @@ describe('index', () => {
         subIndex: 32,
         id: 123,
         name: 'asd',
+        mentionType: 'agent',
       },
       ' ska göra ',
       {
@@ -324,17 +361,18 @@ describe('index', () => {
       ' något kul men ',
       {
         type: 'MentionParser',
-        match: '@(456|fgh)',
+        match: '@(0|testgroupchatroom|group)',
         index: 80,
         subIndex: 38,
-        id: 456,
-        name: 'fgh',
+        id: 0,
+        name: 'testgroupchatroom',
+        mentionType: 'group',
       },
       ' ska ',
       {
         type: 'LinkParser',
         match: 'https://google.com',
-        index: 95,
+        index: 113,
         subIndex: 5,
       },
       ' inte var för bra',
