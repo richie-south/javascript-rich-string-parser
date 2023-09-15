@@ -12,12 +12,12 @@ export function mentionParser(): Parser<'MentionParser'> {
       const delimiter1Position = match.indexOf('|')
       const delimiter2Position = match.indexOf('|', delimiter1Position + 1)
       let name = match.substring(delimiter1Position + 1, match.length - 1)
-      let mentionType = 'agent'
+      let target = 'agent'
       
       if (delimiter2Position !== -1) {
-        // Mention type exist - adjust mentionType and name.
+        // Mention target exist - adjust mentionTarget and name.
         name = match.substring(delimiter1Position + 1, delimiter2Position)
-        mentionType = match.substring(delimiter2Position + 1, match.length - 1)
+        target = match.substring(delimiter2Position + 1, match.length - 1)
       }
       
       return {
@@ -27,7 +27,7 @@ export function mentionParser(): Parser<'MentionParser'> {
         subIndex: result.index,
         id: Number(match.substring(2, match.indexOf('|'))),
         name: name,
-        mentionType,
+        target,
       }
     },
   }

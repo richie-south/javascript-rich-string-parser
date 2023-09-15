@@ -64,7 +64,7 @@ Without mention type:
   name: 'John',
   index: 0,
   subIndex: 0,
-  mentionType: 'agent' // Default value
+  target: 'agent' // Default value
 }
 ```
 With mention type provided:
@@ -77,7 +77,7 @@ With mention type provided:
   name: 'Testgroupchatroom',
   index: 0,
   subIndex: 0,
-  mentionType: 'group'
+  target: 'group'
 }
 ```
 
