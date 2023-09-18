@@ -54,6 +54,8 @@ Matches on `@(number|string)`, @(9712|John)
 
 Result:
 
+Without mention type:
+
 ```typescript
 {
   type: 'MentionParser',
@@ -62,6 +64,20 @@ Result:
   name: 'John',
   index: 0,
   subIndex: 0,
+  target: 'agent' // Default value
+}
+```
+With mention type provided:
+
+```typescript
+{
+  type: 'MentionParser',
+  match: '@(0|Testgroupchatroom|group)', 
+  id: 0,
+  name: 'Testgroupchatroom',
+  index: 0,
+  subIndex: 0,
+  target: 'group'
 }
 ```
 
