@@ -13,7 +13,7 @@ describe('Mention parser', () => {
     expect(result[1]).toHaveProperty('type', 'MentionParser')
     expect(result[1]).toHaveProperty('match', '@(123|richard)')
     expect(result[1]).toHaveProperty('name', 'richard')
-    expect(result[1]).toHaveProperty('target', 'agent')
+    expect(result[1]).toHaveProperty('target', undefined)
     expect(result).toEqual([
       'Hello ',
       {
@@ -23,7 +23,7 @@ describe('Mention parser', () => {
         index: 6,
         subIndex: 6,
         name: 'richard',
-        target: 'agent'
+        target: undefined,
       },
       ' whats up?',
     ])
@@ -48,7 +48,7 @@ describe('Mention parser', () => {
         index: 6,
         subIndex: 6,
         name: 'richard',
-        target: 'agent'
+        target: 'agent',
       },
       ' whats up?',
     ])
@@ -68,7 +68,7 @@ describe('Mention parser', () => {
         index: 5,
         subIndex: 5,
         name: 'richard',
-        target: 'agent',
+        target: undefined,
       },
       {
         type: 'MentionParser',
@@ -77,7 +77,7 @@ describe('Mention parser', () => {
         index: 19,
         subIndex: 0,
         name: 'richard',
-        target: 'agent',
+        target: undefined,
       },
       ' asd ',
       {
@@ -87,7 +87,7 @@ describe('Mention parser', () => {
         index: 38,
         subIndex: 5,
         name: 'erik',
-        target: 'agent',
+        target: undefined,
       },
       ' hej',
     ])
@@ -193,7 +193,7 @@ describe('Multible parsers', () => {
         index: 6,
         subIndex: 6,
         name: 'example',
-        target: 'agent'
+        target: undefined,
       },
       ' ipsum ',
       {type: 'EmailParser', index: 27, subIndex: 7, match: 'example@gmail.com'},
@@ -219,7 +219,7 @@ describe('Multible parsers', () => {
         index: 93,
         subIndex: 1,
         name: 'example',
-        target: 'agent'
+        target: undefined,
       },
     ])
   })
@@ -271,7 +271,7 @@ describe('index', () => {
         subIndex: 13,
         id: 123,
         name: 'asd',
-        target: 'agent',
+        target: undefined,
       },
       ' ska göra något kul men ',
       {
@@ -281,7 +281,7 @@ describe('index', () => {
         subIndex: 24,
         id: 456,
         name: 'fgh',
-        target: 'agent',
+        target: undefined,
       },
       ' ska inte var för bra',
     ])
@@ -301,7 +301,7 @@ describe('index', () => {
         subIndex: 13,
         id: 123,
         name: 'asd',
-        target: 'agent',
+        target: undefined,
       },
       ' ska göra ',
       {
@@ -318,7 +318,7 @@ describe('index', () => {
         subIndex: 38,
         id: 456,
         name: 'fgh',
-        target: 'agent',
+        target: undefined,
       },
       ' ska inte var för bra',
     ])
@@ -349,7 +349,7 @@ describe('index', () => {
         subIndex: 32,
         id: 123,
         name: 'asd',
-        target: 'agent',
+        target: undefined,
       },
       ' ska göra ',
       {
