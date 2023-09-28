@@ -92,6 +92,33 @@ describe('Mention parser', () => {
       ' hej',
     ])
   })
+
+  it('find mention with pipe (|) in name name', () => {
+    const string = 'Hello @(123|my|name|group)?'
+    const result = richStringParser(string, [mentionParser()])
+
+    console.log('result', result)
+
+    expect(result.length).toEqual(3)
+    expect(result[1]).toHaveProperty('id', 123)
+    expect(result[1]).toHaveProperty('type', 'MentionParser')
+    expect(result[1]).toHaveProperty('match', '@(123|my|name|group)')
+    expect(result[1]).toHaveProperty('name', 'my|name')
+    expect(result[1]).toHaveProperty('target', 'group')
+    expect(result).toEqual([
+      'Hello ',
+      {
+        type: 'MentionParser',
+        id: 123,
+        match: '@(123|my|name|group)',
+        index: 6,
+        subIndex: 6,
+        name: 'my|name',
+        target: 'group',
+      },
+      '?',
+    ])
+  })
 })
 
 describe('Email parser', () => {
