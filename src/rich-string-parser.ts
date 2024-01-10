@@ -1,57 +1,64 @@
 import {MatchResults, Parser} from './types'
 
-function _textParser<T>(parser: Parser<T>, text: string, globalIndex = 0): any {
-  const match = parser.parse(text, globalIndex)
+function _textParser<T>(
+  parser: Parser<T>,
+  text: string,
+  index = 0,
+): {
+  list: MatchResults<T>
+  nextPart: string
+  index: number
+} {
+  const match = parser.parse(text, index)
 
   if (match === null) {
     return null
   }
 
   const firstPart = text.substring(0, match.subIndex)
-  const contentList: MatchResults<T> = []
+  const list: MatchResults<T> = []
 
   if (firstPart.length > 0) {
-    contentList.push(firstPart)
+    list.push(firstPart)
   }
 
   const nextPart = text.substring(
     match.subIndex + match.match.length,
     text.length,
   )
-  contentList.push(match)
+  list.push(match)
 
   return {
-    contentList,
+    list,
     nextPart,
-    globalIndex: globalIndex + match.subIndex + match.match.length,
-    end: false,
+    index: index + match.subIndex + match.match.length,
   }
 }
 
 function _runner<T>(
   parser: Parser<T>,
   _text: string,
-  index: number = 0,
+  _index: number = 0,
 ): MatchResults<T> {
-  let contentList: MatchResults<T> = []
-  let text = _text
-  let globalIndex = index
+  let list: MatchResults<T> = []
+  let text: string = _text
+  let index: number = _index
 
   while (true) {
     if (!text) {
-      return contentList
+      return list
     }
 
-    const result = _textParser<T>(parser, text, globalIndex)
+    const result = _textParser<T>(parser, text, index)
 
     if (result === null) {
-      contentList.push(text)
-      return contentList
+      list.push(text)
+      return list
     }
 
-    contentList = contentList.concat(result.contentList)
+    list = list.concat(result.list)
     text = result.nextPart
-    globalIndex = result.globalIndex
+    index = result.index
   }
 }
 
