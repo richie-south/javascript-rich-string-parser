@@ -98,8 +98,6 @@ describe('Mention parser', () => {
     const string = 'Hello @(123|my|name|group)?'
     const result = richStringParser(string, [mentionParser()])
 
-    console.log('result', result)
-
     expect(result.length).toEqual(3)
     expect(result[1]).toHaveProperty('id', 123)
     expect(result[1]).toHaveProperty('type', 'MentionParser')
