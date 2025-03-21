@@ -1,7 +1,7 @@
 import {Parser} from '../types'
 
 export function mentionParser(): Parser<'MentionParser'> {
-  const regex: RegExp = /@\(\d+\|(.+?)\)/
+  const regex = /@\((\d+\|[^()|]+(?:\([^\)]*\)[^()]*)*)(\|(agent|all|group))?\)/;
 
   return {
     parse: (text, index) => {
@@ -16,6 +16,7 @@ export function mentionParser(): Parser<'MentionParser'> {
       
       if (delimiter2Position !== -1) {
         // Mention target exist - adjust mentionTarget and name.
+        // Mentions can be in format: (<id>|<name>) or (<id>|<name>|<target>)
         name = match.substring(delimiter1Position + 1, delimiter2Position)
         target = match.substring(delimiter2Position + 1, match.length - 1)
       }

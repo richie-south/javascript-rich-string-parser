@@ -30,24 +30,24 @@ describe('Mention parser', () => {
   })
 
   it('find mention with mention type', () => {
-    const string = 'Hello @(123|richard|agent) whats up?'
+    const string = 'Hello @(123|richard (med parentes)|agent) whats up?'
     const result = richStringParser(string, [mentionParser()])
 
     expect(result.length).toEqual(3)
     expect(result[1]).toHaveProperty('id', 123)
     expect(result[1]).toHaveProperty('type', 'MentionParser')
-    expect(result[1]).toHaveProperty('match', '@(123|richard|agent)')
-    expect(result[1]).toHaveProperty('name', 'richard')
+    expect(result[1]).toHaveProperty('match', '@(123|richard (med parentes)|agent)')
+    expect(result[1]).toHaveProperty('name', 'richard (med parentes)')
     expect(result[1]).toHaveProperty('target', 'agent')
     expect(result).toEqual([
       'Hello ',
       {
         type: 'MentionParser',
         id: 123,
-        match: '@(123|richard|agent)',
+        match: '@(123|richard (med parentes)|agent)',
         index: 6,
         subIndex: 6,
-        name: 'richard',
+        name: 'richard (med parentes)',
         target: 'agent'
       },
       ' whats up?',
