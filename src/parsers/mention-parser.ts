@@ -1,7 +1,7 @@
 import {Parser} from '../types'
 
 export function mentionParser(): Parser<'MentionParser'> {
-  const regex : RegExp = /@\((\d+\|[^()|]+(?:\([^\)]*\)[^()]*)*)(\|(agent|all|group))?\)/;
+  const regex: RegExp = /@\((\d+\|([^()|]+(?:\([^\)]*\)[^()]*)*)(?:\|([^()|]+(?:\([^\)]*\)[^()]*)*)*)?(\|(agent|all|group))?\))/;
 
   return {
     parse: (text, index) => {
