@@ -3,38 +3,63 @@ import {MatchResults, Parser} from './types'
 function _textParser<T>(
   parser: Parser<T>,
   text: string,
-  globalIndex = 0,
-): MatchResults<T> {
-  if (!text) {
-    return []
-  }
-
-  const match = parser.parse(text, globalIndex)
+  index = 0,
+): {
+  list: MatchResults<T>
+  nextPart: string
+  index: number
+} {
+  const match = parser.parse(text, index)
 
   if (match === null) {
-    return [text]
+    return null
   }
 
   const firstPart = text.substring(0, match.subIndex)
-  const contentList: MatchResults<T> = []
+  const list: MatchResults<T> = []
 
   if (firstPart.length > 0) {
-    contentList.push(firstPart)
+    list.push(firstPart)
   }
 
-  const lastPart = text.substring(
+  const nextPart = text.substring(
     match.subIndex + match.match.length,
     text.length,
   )
-  contentList.push(match)
+  list.push(match)
 
-  return contentList.concat(
-    _textParser(
-      parser,
-      lastPart,
-      globalIndex + match.subIndex + match.match.length,
-    ),
-  )
+  return {
+    list,
+    nextPart,
+    index: index + match.subIndex + match.match.length,
+  }
+}
+
+function _runner<T>(
+  parser: Parser<T>,
+  _text: string,
+  _index: number = 0,
+): MatchResults<T> {
+  let list: MatchResults<T> = []
+  let text: string = _text
+  let index: number = _index
+
+  while (true) {
+    if (!text) {
+      return list
+    }
+
+    const result = _textParser<T>(parser, text, index)
+
+    if (result === null) {
+      list.push(text)
+      return list
+    }
+
+    list = list.concat(result.list)
+    text = result.nextPart
+    index = result.index
+  }
 }
 
 function _parser<T>(
@@ -46,7 +71,7 @@ function _parser<T>(
     let index = 0
     return list.flatMap((item) => {
       if (typeof item === 'string') {
-        return _textParser(parser, item, index)
+        return _runner(parser, item, index)
       }
 
       index = item.index + item.match.length
@@ -54,7 +79,7 @@ function _parser<T>(
     })
   }
 
-  return _textParser<T>(parser, text)
+  return _runner(parser, text)
 }
 
 export function richStringParser<T>(
@@ -65,7 +90,8 @@ export function richStringParser<T>(
     return []
   }
 
-  return parsers.reduce((contentList, parser) => {
-    return _parser(parser, text, contentList)
-  }, [] as MatchResults<T>)
+  return parsers.reduce(
+    (contentList, parser) => _parser(parser, text, contentList),
+    [] as MatchResults<T>,
+  )
 }
